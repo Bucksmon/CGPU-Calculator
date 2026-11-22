@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Left Semi-Circle Scroll Menu</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #333;
+            padding: 2rem;
+            margin: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Grid container: 2 columns on large, stacked on small screens */
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            /* two columns on large screens */
+            gap: 2rem;
+            align-items: start;
+            justify-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                /* single column on small screens */
+                grid-template-rows: auto auto;
+                gap: 1.5rem;
+            }
+        }
+
+        /* Slider column */
+        #column1 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* Slider container */
+        .slider {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Menu container and circular layout */
+        .menu,
+        .menu div {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Individual menu items */
+        .menu span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: left center;
+            cursor: default;
+            transition: transform 300ms, opacity 300ms, filter 300ms;
+            text-align: left;
+            color: #fff;
+            white-space: nowrap;
+            padding-left: 10px;
+            filter: blur(2px);
+            opacity: 0.4;
+        }
+
+        .menu span.active {
+            color: #fff;
+            filter: blur(0);
+            opacity: 1;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        /* Grade table column */
+        #column2 {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* Grade table */
+        #grade-scale-table {
+            font-family: 'Barlow Semi Condensed', sans-serif;
+            text-align: left;
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 500px;
+            font-size: 1.6rem;
+            font-weight: 500;
+            line-height: 1.5;
+            color: white;
+        }
+
+        /* Table header row */
+        #grade-scale-table thead .grade-scale-header {
+            background-color: #f2f2f2;
+            color: black;
+            border: 0.5px solid grey;
+            padding: 0.5rem 1rem;
+        }
+
+        /* Table body cells */
+        #grade-scale-table tbody .grade-scale-cell {
+            border: 0.5px solid grey;
+            padding: 0.5rem 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="column1">
+            <div class="slider">
+                <div class="menu">
+                    <div><span>Cust</span></div>
+                    <div><span>COMSATS</span></div>
+                    <div><span>Air</span></div>
+                    <div><span>Bahria</span></div>
+                </div>
+            </div>
+        </div>
+        <!-- Grade Table Column -->
+        <div id="column2">
+            <table id="grade-scale-table">
+                <thead>
+                    <tr>
+                        <th class="grade-scale-header">Grade</th>
+                        <th class="grade-scale-header">Marks(%)</th>
+                        <th class="grade-scale-header">GPA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JS will populate rows -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+
+        const gradeScales = {
+            COMSATS: [
+                { grade: "A", marks: "85 and above", gpa: "4" },
+                { grade: "A-", marks: "80-84", gpa: "3.66" },
+                { grade: "B+", marks: "75-79", gpa: "3.33" },
+                { grade: "B", marks: "71-74", gpa: "3.00" },
+                { grade: "B-", marks: "68-70", gpa: "2.66" },
+                { grade: "C+", marks: "64-67", gpa: "2.33" },
+                { grade: "C", marks: "61-63", gpa: "2.00" },
+                { grade: "C-", marks: "58-60", gpa: "1.66" },
+                { grade: "D+", marks: "54-57", gpa: "1.33" },
+                { grade: "D", marks: "50-53", gpa: "1.00" },
+                { grade: "F", marks: "0-49", gpa: "0 (Fail)" }
+            ],
+            CUST: [
+                { grade: "A", marks: "90-100", gpa: "4" },
+                { grade: "B", marks: "80-89", gpa: "3" },
+                { grade: "C", marks: "70-79", gpa: "2" },
+                { grade: "D", marks: "60-69", gpa: "1" },
+                { grade: "F", marks: "0-59", gpa: "0 (Fail)" }
+            ]
+        };
+        const spans = document.querySelectorAll(".menu span");
+        const rotationValues = [-60, -20, 20, 60]; // positions along semi-circle
+        let activeIndex = 1; // default active in middle
+
+        function updateSpans() {
+            spans.forEach((span, index) => {
+                const rotation = rotationValues[index];
+                span.style.transform = `rotate(${rotation}deg) translateX(90px) rotate(${-rotation}deg)`;
+                const isActive = index === activeIndex;
+                span.classList.toggle("active", isActive);
+
+                // Only trigger for the active span
+                if (isActive) {
+                    if (span.textContent === "COMSATS") {
+                        populateGradeTable("COMSATS");
+                    } else if (span.textContent === "Cust") {
+                        populateGradeTable("CUST");
+                    }
+                }
+            });
+        }
+
+        // Initialize
+        updateSpans();
+
+        // Scroll to rotate spans
+        document.querySelector(".slider").addEventListener("wheel", (e) => {
+            e.preventDefault();
+
+            if (e.deltaY > 0) {
+                activeIndex = (activeIndex + 1) % spans.length;
+            } else {
+                activeIndex = (activeIndex - 1 + spans.length) % spans.length;
+            }
+            updateSpans();
+        });
+
+        function populateGradeTable(scaleKey) {
+            console.log("Runs");
+            const tableBody = document.querySelector("#grade-scale-table tbody");
+            tableBody.innerHTML = "";
+
+            gradeScales[scaleKey].forEach(row => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+            <td>${row.grade}</td>
+            <td>${row.marks}</td>
+            <td>${row.gpa}</td>
+        `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+    </script>
+</body>
+
+</html>
