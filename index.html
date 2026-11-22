@@ -1,124 +1,336 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090d18">
-  <meta name="description" content="A clean, interactive GPA calculator with grade scales for CUST, COMSATS, Air University and Bahria University.">
-  <title>Gradepoint — GPA Calculator</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="A simple GPA calculator for CUST, COMSATS, Air University and Bahria University.">
+  <title>CGPA Calculator</title>
   <style>
-    :root{color-scheme:dark;--bg:#090d18;--panel:#111827;--panel2:#151f31;--line:rgba(166,190,230,.13);--text:#f4f7ff;--muted:#8d9bb4;--accent:#8b9cff;--accent2:#6ce4d2;--danger:#ff788a;--shadow:0 24px 70px rgba(0,0,0,.28)}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 12% -5%,rgba(103,119,255,.16),transparent 38%),radial-gradient(ellipse at 100% 16%,rgba(59,208,190,.08),transparent 30%),var(--bg);color:var(--text);font-family:Manrope,system-ui,sans-serif;min-height:100vh}
-    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.19;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(to bottom,black,transparent 85%)}
-    button,select,input{font:inherit}button{cursor:pointer}.shell{width:min(1160px,calc(100% - 40px));margin:auto;position:relative;z-index:1}
-    header{height:82px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
-    .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.04em;font-size:1.08rem}.brand-mark{height:34px;width:34px;border-radius:11px;background:linear-gradient(145deg,#a6b0ff,#6978e8);display:grid;place-items:center;color:#10172a;box-shadow:0 7px 24px rgba(115,132,255,.28)}.brand-mark svg{width:19px}
-    .header-note{color:var(--muted);font-size:.78rem;letter-spacing:.03em}
-    .hero{padding:62px 0 36px;display:flex;align-items:flex-end;justify-content:space-between;gap:28px}.eyebrow{display:flex;align-items:center;gap:9px;color:var(--accent2);font:500 .72rem 'DM Mono',monospace;letter-spacing:.13em;text-transform:uppercase}.eyebrow:before{content:"";width:22px;height:1px;background:var(--accent2)}
-    h1{font-size:clamp(2.6rem,6vw,4.8rem);line-height:1.02;letter-spacing:-.075em;margin:16px 0 14px;font-weight:800}.hero p{max-width:570px;color:var(--muted);line-height:1.75;margin:0;font-size:.98rem}.hero-side{color:var(--muted);font: .72rem 'DM Mono',monospace;text-align:right;line-height:1.9}
-    .uni-section{padding:24px 0 26px}.section-kicker{font:500 .7rem 'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.14em;margin-bottom:14px}.uni-picker{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-    .uni-option{position:relative;min-height:74px;padding:14px 16px;border:1px solid var(--line);border-radius:13px;background:rgba(17,24,39,.65);display:flex;align-items:center;gap:12px;color:var(--muted);text-align:left;transition:transform .25s,border-color .25s,background .25s,color .25s;overflow:hidden}
-    .uni-option:hover{transform:translateY(-2px);border-color:rgba(160,174,255,.42);color:var(--text)}.uni-option.active{background:linear-gradient(110deg,rgba(132,147,255,.17),rgba(17,24,39,.78));border-color:rgba(151,164,255,.7);color:var(--text);box-shadow:inset 0 0 0 1px rgba(151,164,255,.12)}
-    .uni-option.active:after{content:"";position:absolute;left:16px;right:16px;bottom:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px}
-    .uni-option img{width:38px;height:38px;object-fit:contain;flex-shrink:0}.uni-option .uni-name{display:block;font-weight:800;font-size:.9rem}.uni-option small{display:block;color:var(--muted);font-size:.68rem;margin-top:3px}
-    .workspace{display:grid;grid-template-columns:minmax(0,1.38fr) minmax(300px,.82fr);gap:16px;padding:8px 0 55px;align-items:start}
-    .panel{background:linear-gradient(155deg,rgba(20,30,48,.96),rgba(13,20,34,.96));border:1px solid var(--line);border-radius:19px;box-shadow:var(--shadow);overflow:hidden}.panel-head{padding:22px 24px 17px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid var(--line)}.panel-title{font-size:1rem;font-weight:800;letter-spacing:-.025em}.panel-sub{color:var(--muted);font-size:.75rem;margin-top:4px}
-    .status{display:inline-flex;align-items:center;gap:7px;color:var(--accent2);font: .66rem 'DM Mono',monospace;letter-spacing:.05em;text-transform:uppercase}.status:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent2);box-shadow:0 0 12px var(--accent2)}
-    .course-head,.course-row{display:grid;grid-template-columns:minmax(90px,1.2fr) minmax(100px,1fr) minmax(92px,.85fr) 34px;gap:10px;align-items:center}.course-head{padding:13px 24px 9px;color:#71809c;font: .62rem 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.09em}.course-list{padding:0 24px}
-    .course-row{padding:9px 0;border-bottom:1px solid rgba(166,190,230,.08);animation:rowIn .35s both}.course-row:last-child{border-bottom:0}@keyframes rowIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
-    .course-label{font-size:.78rem;color:#c5cee0;font-weight:700}.field{width:100%;min-width:0;border:1px solid rgba(166,190,230,.15);border-radius:9px;background:#0c1423;color:var(--text);padding:10px 11px;outline:none;font-size:.78rem;transition:border-color .2s,box-shadow .2s}.field:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(139,156,255,.12)}select.field{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238d9bb4' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
-    .remove{width:32px;height:32px;border:1px solid transparent;border-radius:8px;background:transparent;color:#69758b;font-size:1rem;transition:all .2s}.remove:hover{color:var(--danger);border-color:rgba(255,120,138,.25);background:rgba(255,120,138,.08)}
-    .course-actions{display:flex;align-items:center;justify-content:space-between;padding:14px 24px 21px}.add-btn{border:1px solid rgba(139,156,255,.32);background:rgba(139,156,255,.09);color:#b8c1ff;border-radius:9px;padding:9px 13px;font-weight:700;font-size:.75rem;transition:all .2s}.add-btn:hover{background:rgba(139,156,255,.17);transform:translateY(-1px)}.course-hint{font-size:.68rem;color:#74819a}
-    .result-panel{padding:23px 24px 20px}.result-top{display:flex;justify-content:space-between;align-items:flex-start}.result-label{font-size:.77rem;color:var(--muted)}.result-university{font-size:.78rem;color:var(--text);font-weight:800;margin-top:4px}
-    .gpa-display{display:flex;flex-direction:column;align-items:center;padding:22px 0 18px}.gauge{width:180px;height:180px;position:relative;display:grid;place-items:center}.gauge svg{width:100%;height:100%;overflow:visible;transform:rotate(-90deg)}.gauge-track{fill:none;stroke:rgba(143,160,195,.13);stroke-width:9}.gauge-progress{fill:none;stroke:url(#gpaGradient);stroke-width:9;stroke-linecap:round;stroke-dasharray:439.82;stroke-dashoffset:439.82;transition:stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1)}.gauge-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column}.gpa-number{font:500 2.55rem 'DM Mono',monospace;letter-spacing:-.09em}.gpa-denom{font:.66rem 'DM Mono',monospace;color:#7b89a4;margin-top:2px}.gpa-caption{font-size:.7rem;color:var(--muted);margin-top:8px}
-    .metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.metric{padding:13px 14px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.018)}.metric small{display:block;color:var(--muted);font-size:.65rem}.metric strong{display:block;margin-top:5px;font:500 1.12rem 'DM Mono',monospace;letter-spacing:-.04em}
-    .result-foot{display:flex;justify-content:space-between;align-items:center;margin-top:15px;padding-top:14px;border-top:1px solid var(--line);gap:12px}.result-foot span{font-size:.66rem;color:var(--muted)}.reset-btn{border:0;background:transparent;color:#95a5c8;font-size:.68rem}.reset-btn:hover{color:var(--text)}
-    .scale-panel{margin-top:16px}.scale-table-wrap{padding:0 19px 18px;max-height:360px;overflow:auto}.scale-table{width:100%;border-collapse:collapse;font-size:.74rem}.scale-table th{color:#74819a;text-align:left;font: .62rem 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.08em;padding:12px 8px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#131d2d}.scale-table td{padding:10px 8px;border-bottom:1px solid rgba(166,190,230,.07);color:#c8d1e2}.scale-table tr:last-child td{border:0}.scale-table td:last-child{font-family:'DM Mono',monospace;color:#b8c1ff;text-align:right}.scale-table th:last-child{text-align:right}.grade-pill{display:inline-flex;min-width:28px;justify-content:center;padding:3px 6px;border-radius:5px;background:rgba(139,156,255,.1);color:#b8c1ff;font-weight:800}
-    .guide{padding:20px 22px}.guide h3{font-size:.84rem;margin:0 0 12px}.guide-step{display:flex;gap:11px;margin:12px 0;color:var(--muted);font-size:.72rem;line-height:1.55}.step-num{width:21px;height:21px;flex-shrink:0;border:1px solid var(--line);border-radius:7px;display:grid;place-items:center;color:#b8c1ff;font: .65rem 'DM Mono',monospace}
-    footer{padding:0 0 27px;display:flex;justify-content:space-between;color:#59667d;font-size:.66rem;gap:12px}footer a{color:#8191b4;text-decoration:none}footer a:hover{color:var(--text)}
-    .toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,15px);opacity:0;pointer-events:none;padding:10px 14px;background:#202d42;border:1px solid var(--line);border-radius:9px;color:var(--text);font-size:.75rem;box-shadow:var(--shadow);transition:.25s;z-index:5}.toast.show{opacity:1;transform:translate(-50%,0)}
-    @media(max-width:850px){.workspace{grid-template-columns:1fr}.result-column{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}.scale-panel{margin-top:0}.scale-table-wrap{max-height:320px}}
-    @media(max-width:620px){.shell{width:min(100% - 26px,1160px)}header{height:68px}.header-note{display:none}.hero{padding:45px 0 25px;display:block}.hero-side{display:none}.uni-picker{grid-template-columns:repeat(2,1fr);gap:8px}.uni-option{min-height:65px;padding:10px}.uni-option img{width:31px;height:31px}.workspace{padding-bottom:35px}.panel-head{padding:18px 16px 14px}.course-head{padding:12px 15px 8px;grid-template-columns:minmax(65px,1fr) minmax(82px,1fr) minmax(78px,.9fr) 28px;gap:6px;font-size:.55rem}.course-list{padding:0 15px}.course-row{grid-template-columns:minmax(65px,1fr) minmax(82px,1fr) minmax(78px,.9fr) 28px;gap:6px}.course-label{font-size:.68rem}.field{padding:9px 7px;font-size:.7rem}.course-actions{padding:13px 15px 17px}.course-hint{max-width:140px;text-align:right}.result-column{grid-template-columns:1fr}.scale-panel{margin-top:0}.result-panel{padding:20px}.gauge{width:166px;height:166px}footer{flex-direction:column;text-align:center;align-items:center}}
-    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    #navbar {
+      width: 100%;
+      margin: 0 auto 28px;
+    }
+
+    .uni-navbar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 105px;
+      color: #fff;
+      opacity: .7;
+      cursor: pointer;
+      transition: transform .25s ease, opacity .25s ease;
+    }
+
+    .nav-item img {
+      width: 82px;
+      height: 82px;
+      object-fit: contain;
+      margin-bottom: 6px;
+    }
+
+    .nav-item span {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .nav-item:hover {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+
+    .nav-item.active {
+      opacity: 1;
+    }
+
+    .nav-item.active span {
+      color: #4cafef;
+      font-weight: 600;
+      text-shadow: 0 0 8px rgba(76,175,239,.45);
+    }
+
+    #column2 {
+      width: min(100%, 1120px);
+      margin: 0 auto;
+      padding: 24px;
+      background: rgba(16,16,16,.43);
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(13,38,38,.35);
+    }
+
+    .gpa-layout {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+    }
+
+    .progress-bar-container {
+      flex: 0 0 150px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .gpa-wheel {
+      --progress: 0;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background:
+        radial-gradient(closest-side, #000 78%, transparent 80% 100%),
+        conic-gradient(#4cafef calc(var(--progress) * 25%), #ddd 0);
+      font-size: 20px;
+      font-weight: 700;
+      transition: background .45s ease;
+    }
+
+    .tables-container {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 22px;
+    }
+
+    #courses {
+      flex: 1.2;
+      min-width: 300px;
+      padding: 16px;
+      background: rgba(16,16,16,.56);
+      border: 1px solid #fff;
+      border-radius: 5px;
+      box-shadow: 0 8px 32px rgba(13,38,38,.35);
+    }
+
+    #grades {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    #table01 th {
+      padding: 10px 6px;
+      border-bottom: 2px solid #fff;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    #table01 td {
+      padding: 9px 5px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    #grade-scale-table {
+      background: rgba(16,16,16,.56);
+      border: 1px solid #fff;
+      border-radius: 5px;
+      box-shadow: 0 8px 32px rgba(13,38,38,.35);
+      overflow: hidden;
+    }
+
+    #grade-scale-table th,
+    #grade-scale-table td {
+      padding: 8px 10px;
+      border: 1px solid rgba(255,255,255,.75);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .gpa-menu {
+      position: relative;
+      height: 58px;
+      overflow: hidden;
+      color: #fff;
+      cursor: ns-resize;
+      perspective: 500px;
+    }
+
+    .gpa-menu ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      transform-style: preserve-3d;
+      transition: transform .2s ease;
+    }
+
+    .gpa-menu li {
+      min-height: 26px;
+      padding: 4px 6px;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 14px;
+      opacity: 0;
+      transform: scale(.9);
+      pointer-events: none;
+      transition: all .2s ease;
+    }
+
+    .gpa-menu li.active {
+      opacity: 1;
+      transform: scale(1.12);
+      color: #4cafef;
+      font-weight: 700;
+      pointer-events: auto;
+    }
+
+    .gpa-menu li.neighbor {
+      opacity: .45;
+      transform: scale(.95);
+    }
+
+    .checkbox-td {
+      width: 28px;
+      color: #ff5555;
+      cursor: pointer;
+      font-size: 18px !important;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 14px;
+    }
+
+    .animated-button {
+      padding: 9px 20px;
+      border: 1px solid #fff;
+      border-radius: 4px;
+      background: transparent;
+      color: #fff;
+      font-size: 15px;
+      transition: background .2s ease, color .2s ease;
+    }
+
+    .animated-button:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 14px; }
+      .nav-item img { width: 65px; height: 65px; }
+      .uni-navbar { gap: 14px; }
+      #column2 { padding: 16px 10px; }
+      .gpa-layout { flex-direction: column; gap: 12px; }
+      .progress-bar-container { flex-basis: auto; }
+      .tables-container {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 18px;
+      }
+      #courses, #grades { width: 100%; min-width: 0; }
+      #table01 th, #table01 td,
+      #grade-scale-table th, #grade-scale-table td {
+        font-size: 13px;
+        padding: 8px 5px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <header>
-      <div class="brand"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18V6l8 8 8-8v12"/></svg></span> gradepoint</div>
-      <div class="header-note">A simpler way to track your semester.</div>
-    </header>
-
-    <section class="hero">
-      <div>
-        <div class="eyebrow">Academic toolkit / 01</div>
-        <h1>Make every<br><span style="background:linear-gradient(90deg,#aab4ff,#73dfd2);-webkit-background-clip:text;background-clip:text;color:transparent">credit count.</span></h1>
-        <p>Calculate your semester GPA with the grading scale used by your university. Add your courses, choose your credits and grades, and see your result update instantly.</p>
+  <div id="navbar">
+    <div class="uni-navbar" aria-label="Choose university">
+      <div class="nav-item" data-uni="CUST" role="button" tabindex="0">
+        <img src="images/cust.png" alt="CUST logo"><span>Cust</span>
       </div>
-      <div class="hero-side">LIVE GPA CALCULATION<br>4 UNIVERSITY SCALE OPTIONS<br>NO SIGN-UP REQUIRED</div>
-    </section>
-
-    <section class="uni-section">
-      <div class="section-kicker">01 — Select your university</div>
-      <div class="uni-picker" id="uniPicker">
-        <button class="uni-option" data-uni="CUST" type="button"><img src="images/cust.png" alt=""><span><span class="uni-name">CUST</span><small>Capital University</small></span></button>
-        <button class="uni-option active" data-uni="COMSATS" type="button"><img src="images/Comsats.svg" alt=""><span><span class="uni-name">COMSATS</span><small>University</small></span></button>
-        <button class="uni-option" data-uni="Air" type="button"><img src="images/Air.svg" alt=""><span><span class="uni-name">Air University</span><small>Islamabad</small></span></button>
-        <button class="uni-option" data-uni="Bahria" type="button"><img src="images/Bahria.svg" alt=""><span><span class="uni-name">Bahria</span><small>University</small></span></button>
+      <div class="nav-item active" data-uni="COMSATS" role="button" tabindex="0">
+        <img src="images/Comsats.svg" alt="COMSATS logo"><span>COMSATS</span>
       </div>
-    </section>
-
-    <main class="workspace">
-      <section class="panel">
-        <div class="panel-head"><div><div class="panel-title">Your courses</div><div class="panel-sub">Enter the credit hours and grade for each subject.</div></div><span class="status">Auto calculating</span></div>
-        <div class="course-head"><span>Course</span><span>Credit hours</span><span>Grade</span><span></span></div>
-        <div class="course-list" id="courseList"></div>
-        <div class="course-actions"><button type="button" class="add-btn" id="addCourse">＋ Add course</button><span class="course-hint">You can add or remove courses anytime.</span></div>
-      </section>
-
-      <aside class="result-column">
-        <section class="panel result-panel">
-          <div class="result-top"><div><div class="result-label">Your semester result</div><div class="result-university" id="resultUniversity">COMSATS University</div></div><span class="status">Live</span></div>
-          <div class="gpa-display">
-            <div class="gauge">
-              <svg viewBox="0 0 160 160" aria-label="GPA progress">
-                <defs><linearGradient id="gpaGradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#929fff"/><stop offset="100%" stop-color="#66e4d1"/></linearGradient></defs>
-                <circle class="gauge-track" cx="80" cy="80" r="70"/>
-                <circle class="gauge-progress" id="gaugeProgress" cx="80" cy="80" r="70"/>
-              </svg>
-              <div class="gauge-center"><div class="gpa-number" id="gpaValue">0.00</div><div class="gpa-denom">OUT OF 4.00</div></div>
-            </div>
-            <div class="gpa-caption" id="gpaCaption">Add course grades to calculate your GPA</div>
-          </div>
-          <div class="metric-grid">
-            <div class="metric"><small>Total credit hours</small><strong id="totalCredits">0</strong></div>
-            <div class="metric"><small>Total grade points</small><strong id="totalPoints">0.00</strong></div>
-          </div>
-          <div class="result-foot"><span>Weighted by course credit hours</span><button type="button" class="reset-btn" id="resetCourses">Reset courses ↺</button></div>
-        </section>
-
-        <section class="panel scale-panel">
-          <div class="panel-head"><div><div class="panel-title">Grade scale</div><div class="panel-sub">Reference for the selected university.</div></div></div>
-          <div class="scale-table-wrap"><table class="scale-table"><thead><tr><th>Grade</th><th>Marks (%)</th><th>GPA</th></tr></thead><tbody id="scaleBody"></tbody></table></div>
-        </section>
-      </aside>
-    </main>
-
-    <section class="panel guide">
-      <h3>How it works</h3>
-      <div class="guide-step"><span class="step-num">1</span><span>Choose the university whose grading policy you want to use. The grade scale updates automatically.</span></div>
-      <div class="guide-step"><span class="step-num">2</span><span>Add a course, then select its credit hours and final letter grade.</span></div>
-      <div class="guide-step"><span class="step-num">3</span><span>Your GPA is calculated as a credit-weighted average and updates as you edit your courses.</span></div>
-    </section>
-    <footer><span>© <span id="year"></span> gradepoint · Built for students.</span><span>Grade scales are based on the included university references. Confirm current policies with your institution.</span></footer>
+      <div class="nav-item" data-uni="Air" role="button" tabindex="0">
+        <img src="images/Air.svg" alt="Air University logo"><span>Air</span>
+      </div>
+      <div class="nav-item" data-uni="Bahria" role="button" tabindex="0">
+        <img src="images/Bahria.svg" alt="Bahria University logo"><span>Bahria</span>
+      </div>
+    </div>
   </div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <main id="column2">
+    <div class="gpa-layout">
+      <div class="progress-bar-container">
+        <div class="gpa-wheel" id="gpaWheel" data-value="0.00" aria-live="polite">0.00</div>
+      </div>
+
+      <div class="tables-container">
+        <section id="courses">
+          <table id="table01">
+            <thead>
+              <tr>
+                <th>Courses</th>
+                <th>GPA</th>
+                <th>Credit Hours</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="courseRows"></tbody>
+          </table>
+          <div class="button-container">
+            <button class="animated-button" id="add" type="button">Add</button>
+          </div>
+        </section>
+
+        <section id="grades">
+          <table id="grade-scale-table">
+            <thead>
+              <tr>
+                <th>Grade</th>
+                <th>Marks (%)</th>
+                <th>GPA</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </section>
+      </div>
+    </div>
+  </main>
 
   <script>
     "use strict";
+
     const gradeScales = {
       CUST: [
         {grade:"A",marks:"90-100",gpa:4.00},{grade:"A-",marks:"86-89",gpa:3.67},{grade:"B+",marks:"81-85",gpa:3.33},{grade:"B",marks:"77-80",gpa:3.00},{grade:"B-",marks:"72-76",gpa:2.67},{grade:"C+",marks:"68-71",gpa:2.33},{grade:"C",marks:"63-67",gpa:2.00},{grade:"C-",marks:"58-62",gpa:1.67},{grade:"D+",marks:"54-57",gpa:1.33},{grade:"D",marks:"50-53",gpa:1.00},{grade:"F",marks:"Below 50",gpa:0.00}
@@ -133,134 +345,193 @@
         {grade:"A",marks:"87-100",gpa:4.00},{grade:"B+",marks:"80-86",gpa:3.50},{grade:"B",marks:"72-79",gpa:3.00},{grade:"C+",marks:"66-71",gpa:2.50},{grade:"C",marks:"60-65",gpa:2.00},{grade:"D",marks:"50-59",gpa:1.50},{grade:"F",marks:"Below 50",gpa:0.00}
       ]
     };
-    const names = {CUST:"Capital University of Science & Technology",COMSATS:"COMSATS University",Air:"Air University",Bahria:"Bahria University"};
-    const logos = {CUST:"images/cust.png",COMSATS:"images/Comsats.svg",Air:"images/Air.svg",Bahria:"images/Bahria.svg"};
-    let activeUni = "COMSATS";
-    let nextId = 1;
-    let toastTimer;
 
-    const courseList = document.getElementById("courseList");
-    const scaleBody = document.getElementById("scaleBody");
-    const gpaCircle = document.getElementById("gaugeProgress");
-    const circumference = 2 * Math.PI * 70;
-    gpaCircle.style.strokeDasharray = circumference;
-    document.getElementById("year").textContent = new Date().getFullYear();
+    const courseRows = document.getElementById("courseRows");
+    const gpaWheel = document.getElementById("gpaWheel");
+    let activeUniversity = "COMSATS";
+    let courseNumber = 0;
 
-    function addCourse() {
-      const id = nextId++;
-      const row = document.createElement("div");
-      row.className = "course-row";
-      row.dataset.id = id;
+    function createGpaMenu(values, selectedIndex, onChange) {
+      const container = document.createElement("div");
+      container.className = "gpa-menu";
+      container.tabIndex = 0;
+      container.setAttribute("role", "listbox");
+      container.setAttribute("aria-label", "Select GPA");
 
-      const label = document.createElement("span");
-      label.className = "course-label";
-      const credits = document.createElement("select");
-      credits.className = "field credits";
-      credits.setAttribute("aria-label", "Credit hours");
-      credits.innerHTML = '<option value="">Credits</option>' + [1,2,3,4,5,6].map(n => '<option value="' + n + '">' + n + (n === 1 ? ' credit' : ' credits') + '</option>').join("");
-      const grade = document.createElement("select");
-      grade.className = "field grade";
-      grade.setAttribute("aria-label", "Letter grade");
-      grade.innerHTML = '<option value="">Grade</option>' + gradeScales[activeUni].map(item => '<option value="' + item.grade + '">' + item.grade + '</option>').join("");
-      const remove = document.createElement("button");
-      remove.type = "button";
-      remove.className = "remove";
-      remove.setAttribute("aria-label", "Remove course");
-      remove.textContent = "×";
-      remove.addEventListener("click", () => { row.remove(); relabelCourses(); calculate(); });
-      credits.addEventListener("change", calculate);
-      grade.addEventListener("change", calculate);
+      const list = document.createElement("ul");
+      container.appendChild(list);
 
-      row.append(label, credits, grade, remove);
-      courseList.appendChild(row);
-      relabelCourses();
-      return row;
-    }
-
-    function relabelCourses() {
-      [...courseList.querySelectorAll(".course-row")].forEach((row, index) => {
-        row.querySelector(".course-label").textContent = "Course " + (index + 1);
+      values.forEach(value => {
+        const item = document.createElement("li");
+        item.textContent = Number(value).toFixed(2);
+        list.appendChild(item);
       });
-    }
 
-    function updateScale() {
-      scaleBody.innerHTML = gradeScales[activeUni].map(item =>
-        '<tr><td><span class="grade-pill">' + item.grade + '</span></td><td>' + item.marks + '</td><td>' + item.gpa.toFixed(2) + '</td></tr>'
-      ).join("");
-      document.getElementById("resultUniversity").textContent = names[activeUni];
-      document.querySelectorAll(".uni-option").forEach(button => {
-        const selected = button.dataset.uni === activeUni;
-        button.classList.toggle("active", selected);
-        button.setAttribute("aria-pressed", String(selected));
-      });
-    }
+      const items = [...list.children];
+      let index = selectedIndex;
 
-    function calculate() {
-      let creditsTotal = 0;
-      let pointsTotal = 0;
-      const scale = gradeScales[activeUni];
+      function render(notify = true) {
+        items.forEach((item, itemIndex) => {
+          item.classList.toggle("active", itemIndex === index);
+          item.classList.toggle("neighbor", Math.abs(itemIndex - index) === 1);
+        });
 
-      courseList.querySelectorAll(".course-row").forEach(row => {
-        const credits = Number(row.querySelector(".credits").value);
-        const grade = row.querySelector(".grade").value;
-        const gradeInfo = scale.find(item => item.grade === grade);
-        if (credits > 0 && gradeInfo) {
-          creditsTotal += credits;
-          pointsTotal += credits * gradeInfo.gpa;
+        const selected = items[index];
+        list.style.transform = "translateY(" + (container.clientHeight / 2 - selected.offsetTop - selected.offsetHeight / 2) + "px)";
+        if (notify) onChange(Number(values[index]));
+      }
+
+      function move(direction) {
+        const next = Math.max(0, Math.min(values.length - 1, index + direction));
+        if (next !== index) {
+          index = next;
+          render();
+        }
+      }
+
+      container.addEventListener("wheel", event => {
+        event.preventDefault();
+        move(Math.sign(event.deltaY));
+      }, {passive:false});
+
+      container.addEventListener("keydown", event => {
+        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+          event.preventDefault();
+          move(event.key === "ArrowDown" ? 1 : -1);
         }
       });
 
-      const gpa = creditsTotal ? pointsTotal / creditsTotal : 0;
-      const offset = circumference * (1 - Math.min(gpa / 4, 1));
-      gpaCircle.style.strokeDashoffset = offset;
-      document.getElementById("gpaValue").textContent = gpa.toFixed(2);
-      document.getElementById("totalCredits").textContent = creditsTotal;
-      document.getElementById("totalPoints").textContent = pointsTotal.toFixed(2);
-      document.getElementById("gpaCaption").textContent = creditsTotal ? (gpa >= 3.5 ? "Excellent work. Keep that momentum." : gpa >= 3 ? "Solid progress. Keep building on it." : gpa >= 2 ? "You're making progress. Keep going." : "Every semester is a fresh opportunity.") : "Add course grades to calculate your GPA";
+      items.forEach((item, itemIndex) => item.addEventListener("click", () => {
+        index = itemIndex;
+        render();
+      }));
+
+      requestAnimationFrame(() => render(false));
+      return container;
     }
 
-    function showToast(message) {
-      const toast = document.getElementById("toast");
-      toast.textContent = message;
-      toast.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
-    }
+    function addCourse() {
+      courseNumber += 1;
+      const row = document.createElement("tr");
+      const nameCell = document.createElement("td");
+      nameCell.textContent = "Course " + courseNumber;
 
-    document.getElementById("uniPicker").addEventListener("click", event => {
-      const button = event.target.closest(".uni-option");
-      if (!button || button.dataset.uni === activeUni) return;
-      const oldUni = activeUni;
-      activeUni = button.dataset.uni;
-      updateScale();
-      courseList.querySelectorAll(".course-row").forEach(row => {
-        const gradeSelect = row.querySelector(".grade");
-        const previous = gradeSelect.value;
-        gradeSelect.innerHTML = '<option value="">Grade</option>' + gradeScales[activeUni].map(item => '<option value="' + item.grade + '">' + item.grade + '</option>').join("");
-        if (gradeScales[activeUni].some(item => item.grade === previous)) gradeSelect.value = previous;
+      const gpaCell = document.createElement("td");
+      const creditsCell = document.createElement("td");
+      const removeCell = document.createElement("td");
+      removeCell.className = "checkbox-td";
+      removeCell.textContent = "×";
+      removeCell.title = "Remove course";
+      removeCell.setAttribute("aria-label", "Remove course");
+      removeCell.addEventListener("click", () => {
+        row.remove();
+        renumberCourses();
+        calculateGpa();
       });
-      calculate();
-      showToast("Switched to " + names[activeUni] + " grading scale");
-    });
 
-    document.getElementById("addCourse").addEventListener("click", () => {
-      const row = addCourse();
-      row.querySelector(".credits").focus();
-    });
+      const scale = gradeScales[activeUniversity];
+      const gpaValues = scale.map(item => item.gpa);
+      gpaCell.appendChild(createGpaMenu(gpaValues, 0, calculateGpa));
 
-    document.getElementById("resetCourses").addEventListener("click", () => {
-      courseList.innerHTML = "";
-      nextId = 1;
+      const creditSelect = document.createElement("select");
+      creditSelect.setAttribute("aria-label", "Credit hours");
+      creditSelect.style.width = "100%";
+      creditSelect.style.padding = "8px 4px";
+      creditSelect.style.borderRadius = "4px";
+      creditSelect.style.background = "#fff";
+      creditSelect.style.color = "#222";
+      creditSelect.style.border = "1px solid #ccc";
+
+      [1,2,3,4,5,6].forEach(value => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = value;
+        if (value === 3) option.selected = true;
+        creditSelect.appendChild(option);
+      });
+
+      creditSelect.addEventListener("change", calculateGpa);
+      creditsCell.appendChild(creditSelect);
+      row.append(nameCell, gpaCell, creditsCell, removeCell);
+      courseRows.appendChild(row);
+      calculateGpa();
+    }
+
+    function renumberCourses() {
+      [...courseRows.rows].forEach((row, index) => {
+        row.cells[0].textContent = "Course " + (index + 1);
+      });
+      courseNumber = courseRows.rows.length;
+    }
+
+    function calculateGpa() {
+      let totalCredits = 0;
+      let totalPoints = 0;
+
+      [...courseRows.rows].forEach(row => {
+        const credit = Number(row.querySelector("select").value);
+        const selectedGpa = Number(row.querySelector(".gpa-menu li.active")?.textContent || 0);
+        totalCredits += credit;
+        totalPoints += credit * selectedGpa;
+      });
+
+      const result = totalCredits ? totalPoints / totalCredits : 0;
+      gpaWheel.textContent = result.toFixed(2);
+      gpaWheel.dataset.value = result.toFixed(2);
+      gpaWheel.style.setProperty("--progress", result);
+      const hue = Math.round(result / 4 * 120);
+      const color = "hsl(" + hue + ", 75%, 52%)";
+      gpaWheel.style.background =
+        "radial-gradient(closest-side, #000 78%, transparent 80% 100%), conic-gradient(" +
+        color + " " + (result / 4 * 100) + "%, #ddd 0)";
+    }
+
+    function populateGradeTable(university) {
+      const tbody = document.querySelector("#grade-scale-table tbody");
+      tbody.replaceChildren();
+
+      gradeScales[university].forEach(item => {
+        const row = document.createElement("tr");
+        [item.grade, item.marks, item.gpa.toFixed(2)].forEach(value => {
+          const cell = document.createElement("td");
+          cell.textContent = value;
+          row.appendChild(cell);
+        });
+        tbody.appendChild(row);
+      });
+    }
+
+    function selectUniversity(university) {
+      if (university === activeUniversity) return;
+      activeUniversity = university;
+
+      document.querySelectorAll(".nav-item").forEach(item => {
+        const active = item.dataset.uni === university;
+        item.classList.toggle("active", active);
+        item.setAttribute("aria-pressed", String(active));
+      });
+
+      populateGradeTable(university);
+      courseRows.replaceChildren();
+      courseNumber = 0;
       addCourse();
-      addCourse();
-      calculate();
-      showToast("Courses have been reset");
+      calculateGpa();
+    }
+
+    document.querySelectorAll(".nav-item").forEach(item => {
+      item.addEventListener("click", () => selectUniversity(item.dataset.uni));
+      item.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          selectUniversity(item.dataset.uni);
+        }
+      });
     });
 
-    updateScale();
+    document.getElementById("add").addEventListener("click", addCourse);
+
+    populateGradeTable(activeUniversity);
     addCourse();
-    addCourse();
-    calculate();
   </script>
 </body>
 </html>
