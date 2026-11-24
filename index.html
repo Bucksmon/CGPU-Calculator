@@ -1,341 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#dbeafe">
-  <meta name="description" content="A simple semester GPA calculator for CUST, COMSATS, Air University and Bahria University.">
+  <meta name="description"
+    content="A simple semester GPA calculator for CUST, COMSATS, Air University and Bahria University.">
   <title>GPA Calculator</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-
-    :root {
-      color-scheme: light;
-      --blue: #2563eb;
-      --blue-dark: #1e40af;
-      --ink: #1e293b;
-      --muted: #64748b;
-      --line: #cbd5e1;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
-    }
-
-    body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #dbeafe, #eff6ff);
-      color: var(--ink);
-      padding-bottom: 36px;
-    }
-
-    button, select { font: inherit; }
-
-    #navbar {
-      background: #fff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, .05);
-      padding: 12px 20px;
-      margin-bottom: 30px;
-    }
-
-    .uni-navbar {
-      display: flex;
-      justify-content: center;
-      gap: 25px;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-
-    .uni-navbar::-webkit-scrollbar { display: none; }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 14px;
-      border: 0;
-      border-radius: 10px;
-      background: transparent;
-      cursor: pointer;
-      white-space: nowrap;
-      font-size: 14px;
-      font-weight: 500;
-      color: #334155;
-      transition: background .2s, color .2s, transform .2s;
-    }
-
-    .nav-item img {
-      width: 27px;
-      height: 27px;
-      object-fit: contain;
-    }
-
-    .nav-item:hover {
-      background: #f1f5f9;
-      transform: translateY(-1px);
-    }
-
-    .nav-item.active {
-      color: var(--blue);
-      background: #eff6ff;
-    }
-
-    .container {
-      display: flex;
-      gap: 0;
-      max-width: 1200px;
-      width: 100%;
-      margin: auto;
-      padding: 0 20px 20px;
-      align-items: stretch;
-    }
-
-    .calculator, .info {
-      flex: 1;
-      min-width: 0;
-      padding: 30px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, .08);
-    }
-
-    .calculator {
-      background: #fff;
-      border-radius: 16px 0 0 16px;
-    }
-
-    .title {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 28px;
-      color: var(--blue);
-      font-size: 20px;
-      font-weight: 600;
-    }
-
-    .title img {
-      width: 54px;
-      height: 54px;
-      object-fit: contain;
-    }
-
-    .course-row {
-      display: grid;
-      grid-template-columns: minmax(72px, 1fr) minmax(115px, 1fr) minmax(85px, .85fr) 30px;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 11px;
-      animation: row-in .22s ease both;
-    }
-
-    @keyframes row-in {
-      from { opacity: 0; transform: translateY(5px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .course-label {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--blue);
-    }
-
-    .course-row select {
-      width: 100%;
-      min-width: 0;
-      padding: 9px 8px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fff;
-      color: #334155;
-      font-size: 12px;
-      outline: none;
-      transition: border-color .2s, box-shadow .2s;
-    }
-
-    .course-row select:focus {
-      border-color: #60a5fa;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
-    }
-
-    .delete-row {
-      width: 30px;
-      height: 34px;
-      display: grid;
-      place-items: center;
-      border: 0;
-      border-radius: 7px;
-      background: transparent;
-      cursor: pointer;
-      font-size: 15px;
-      color: #dc2626;
-      transition: background .2s, transform .2s;
-    }
-
-    .delete-row:hover {
-      background: #fef2f2;
-      transform: scale(1.06);
-    }
-
-    .add-row {
-      margin: 7px 0 0;
-      padding: 7px 0;
-      border: 0;
-      background: transparent;
-      color: var(--blue);
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-    }
-
-    .add-row:hover { color: var(--blue-dark); text-decoration: underline; }
-
-    .result {
-      margin-top: 28px;
-      padding-top: 22px;
-      border-top: 1px solid #e2e8f0;
-      text-align: center;
-    }
-
-    .gpa-wheel {
-      width: 140px;
-      height: 140px;
-      margin: 0 auto 12px;
-      position: relative;
-    }
-
-    .progress-ring { display: block; overflow: visible; }
-
-    .progress-ring-bg {
-      fill: none;
-      stroke: #e5e7eb;
-      stroke-width: 12;
-    }
-
-    .progress-ring-fill {
-      fill: none;
-      stroke: url(#grad);
-      stroke-width: 12;
-      stroke-linecap: round;
-      stroke-dasharray: 377;
-      stroke-dashoffset: 377;
-      transform: rotate(-90deg);
-      transform-origin: 50% 50%;
-      transition: stroke-dashoffset .5s ease;
-    }
-
-    .gpa-text {
-      font-size: 24px;
-      font-weight: 700;
-      fill: var(--ink);
-      text-anchor: middle;
-      dominant-baseline: middle;
-    }
-
-    .result small {
-      display: block;
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .info {
-      border-radius: 0 16px 16px 0;
-      background:
-        linear-gradient(rgba(0, 47, 122, .87), rgba(0, 47, 122, .87)),
-        url("images/Comsats.svg") center / 800px no-repeat,
-        #0b3479;
-      color: #fff;
-      transition: background-image .25s ease;
-    }
-
-    .info h3 {
-      margin-bottom: 13px;
-      font-size: 17px;
-      font-weight: 600;
-    }
-
-    .info ul {
-      list-style: disc inside;
-      margin-bottom: 25px;
-      line-height: 1.8;
-      font-size: 13px;
-      color: rgba(255,255,255,.92);
-    }
-
-    .grade-table-wrap {
-      overflow-x: auto;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, .16);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: rgba(255, 255, 255, .13);
-    }
-
-    th, td {
-      padding: 10px 9px;
-      text-align: center;
-      border-bottom: 1px solid rgba(255,255,255,.2);
-      color: #fff;
-      font-size: 12px;
-    }
-
-    th {
-      background: rgba(37, 99, 235, .58);
-      font-weight: 600;
-    }
-
-    tbody tr:last-child td { border-bottom: 0; }
-    tbody tr { transition: background .15s; }
-    tbody tr:hover { background: rgba(255,255,255,.08); }
-
-    .empty-hint {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 11px;
-      text-align: center;
-    }
-
-    @media (max-width: 820px) {
-      .container { flex-direction: column; max-width: 680px; }
-      .calculator { border-radius: 16px 16px 0 0; }
-      .info { border-radius: 0 0 16px 16px; }
-    }
-
-    @media (max-width: 480px) {
-      #navbar { margin-bottom: 18px; padding: 10px 8px; }
-      .uni-navbar { justify-content: flex-start; gap: 6px; }
-      .nav-item { padding: 8px 10px; font-size: 12px; }
-      .nav-item img { width: 23px; height: 23px; }
-      .container { padding: 0 12px 20px; }
-      .calculator, .info { padding: 22px 17px; }
-      .course-row { grid-template-columns: 68px minmax(90px, 1fr) minmax(75px, .85fr) 28px; gap: 6px; }
-      .course-row select { padding: 9px 5px; font-size: 11px; }
-      .course-label { font-size: 11px; }
-      .delete-row { width: 27px; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        scroll-behavior: auto !important;
-        animation-duration: .01ms !important;
-        transition-duration: .01ms !important;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <nav id="navbar" aria-label="Choose university">
     <div class="uni-navbar">
-      <button class="nav-item" data-uni="CUST" type="button"><img src="images/cust.png" alt=""> <span>Cust</span></button>
-      <button class="nav-item active" data-uni="COMSATS" type="button" aria-pressed="true"><img src="images/Comsats.svg" alt=""> <span>COMSATS</span></button>
+      <button class="nav-item" data-uni="CUST" type="button"><img src="images/cust.png" alt="">
+        <span>Cust</span></button>
+      <button class="nav-item active" data-uni="COMSATS" type="button" aria-pressed="true"><img src="images/Comsats.svg"
+          alt=""> <span>COMSATS</span></button>
       <button class="nav-item" data-uni="Air" type="button"><img src="images/Air.svg" alt=""> <span>Air</span></button>
-      <button class="nav-item" data-uni="Bahria" type="button"><img src="images/Bahria.svg" alt=""> <span>Bahria</span></button>
+      <button class="nav-item" data-uni="Bahria" type="button"><img src="images/Bahria.svg" alt="">
+        <span>Bahria</span></button>
     </div>
   </nav>
 
@@ -353,11 +38,12 @@
 
       <div class="result" aria-live="polite">
         <div class="gpa-wheel">
-          <svg class="progress-ring" width="140" height="140" viewBox="0 0 140 140" role="img" aria-label="Calculated GPA">
+          <svg class="progress-ring" width="140" height="140" viewBox="0 0 140 140" role="img"
+            aria-label="Calculated GPA">
             <defs>
               <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#3b82f6"/>
-                <stop offset="100%" stop-color="#1e40af"/>
+                <stop offset="0%" stop-color="#3b82f6" />
+                <stop offset="100%" stop-color="#1e40af" />
               </linearGradient>
             </defs>
             <circle class="progress-ring-bg" cx="70" cy="70" r="60"></circle>
@@ -383,189 +69,20 @@
       <h3>Grade Scale</h3>
       <div class="grade-table-wrap">
         <table id="grade-scale-table">
-          <thead><tr><th>Grade</th><th>Marks (%)</th><th>GPA</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Grade</th>
+              <th>Marks (%)</th>
+              <th>GPA</th>
+            </tr>
+          </thead>
           <tbody></tbody>
         </table>
       </div>
     </aside>
   </main>
+  <script src="script.js"></script>
 
-  <script>
-    "use strict";
-
-    const gradeScales = {
-      CUST: [
-        {grade:"A",marks:"90-100",gpa:4.00},{grade:"A-",marks:"86-89",gpa:3.67},{grade:"B+",marks:"81-85",gpa:3.33},{grade:"B",marks:"77-80",gpa:3.00},{grade:"B-",marks:"72-76",gpa:2.67},{grade:"C+",marks:"68-71",gpa:2.33},{grade:"C",marks:"63-67",gpa:2.00},{grade:"C-",marks:"58-62",gpa:1.67},{grade:"D+",marks:"54-57",gpa:1.33},{grade:"D",marks:"50-53",gpa:1.00},{grade:"F",marks:"Below 50",gpa:0.00}
-      ],
-      COMSATS: [
-        {grade:"A",marks:"85 and above",gpa:4.00},{grade:"A-",marks:"80-84",gpa:3.66},{grade:"B+",marks:"75-79",gpa:3.33},{grade:"B",marks:"71-74",gpa:3.00},{grade:"B-",marks:"68-70",gpa:2.66},{grade:"C+",marks:"64-67",gpa:2.33},{grade:"C",marks:"61-63",gpa:2.00},{grade:"C-",marks:"58-60",gpa:1.66},{grade:"D+",marks:"54-57",gpa:1.30},{grade:"D",marks:"50-53",gpa:1.00},{grade:"F",marks:"Below 50",gpa:0.00}
-      ],
-      Air: [
-        {grade:"A",marks:"80-100",gpa:4.00},{grade:"A-",marks:"75-79.99",gpa:3.67},{grade:"B+",marks:"70-74.99",gpa:3.33},{grade:"B",marks:"65-69.99",gpa:3.00},{grade:"B-",marks:"60-64.99",gpa:2.67},{grade:"C+",marks:"55-59.99",gpa:2.33},{grade:"C",marks:"50-54.99",gpa:2.00},{grade:"F",marks:"Below 50",gpa:0.00}
-      ],
-      Bahria: [
-        {grade:"A",marks:"87-100",gpa:4.00},{grade:"B+",marks:"80-86",gpa:3.50},{grade:"B",marks:"72-79",gpa:3.00},{grade:"C+",marks:"66-71",gpa:2.50},{grade:"C",marks:"60-65",gpa:2.00},{grade:"D",marks:"50-59",gpa:1.50},{grade:"F",marks:"Below 50",gpa:0.00}
-      ]
-    };
-
-    const universityAssets = {
-      CUST: {name:"CUST",logo:"images/cust.png",background:"images/cust.png"},
-      COMSATS: {name:"COMSATS",logo:"images/Comsats.svg",background:"images/Comsats.svg"},
-      Air: {name:"Air University",logo:"images/Air.svg",background:"images/Air.svg"},
-      Bahria: {name:"Bahria University",logo:"images/Bahria.svg",background:"images/Bahria.svg"}
-    };
-
-    const rowsContainer = document.getElementById("course-rows");
-    const gpaValue = document.getElementById("gpa-value");
-    const progressRing = document.getElementById("progress-ring-fill");
-    const totalCreditsLabel = document.getElementById("total-credits");
-    const totalPointsLabel = document.getElementById("total-points");
-    const resultHint = document.getElementById("result-hint");
-    const circumference = 2 * Math.PI * 60;
-
-    let activeUniversity = "COMSATS";
-    let courseNumber = 0;
-
-    function createSelect(className, label, options) {
-      const select = document.createElement("select");
-      select.className = className;
-      select.setAttribute("aria-label", label);
-
-      options.forEach(({value, text, disabled = false, selected = false}) => {
-        const option = document.createElement("option");
-        option.value = value;
-        option.textContent = text;
-        option.disabled = disabled;
-        option.selected = selected;
-        select.appendChild(option);
-      });
-
-      select.addEventListener("change", calculateGpa);
-      return select;
-    }
-
-    function addCourse() {
-      courseNumber += 1;
-
-      const row = document.createElement("div");
-      row.className = "course-row";
-
-      const label = document.createElement("span");
-      label.className = "course-label";
-      label.textContent = "Course " + courseNumber;
-
-      const credits = createSelect("credits", "Credits for course " + courseNumber, [
-        {value:"",text:"Select Credits",disabled:true,selected:true},
-        ...[1,2,3,4,5].map(value => ({value:String(value),text:value + (value === 1 ? " Credit" : " Credits")}))
-      ]);
-
-      const gradeOptions = gradeScales[activeUniversity].map(item => ({
-        value:item.grade,
-        text:item.grade + " · " + item.gpa.toFixed(2)
-      }));
-      const grade = createSelect("grades", "Grade for course " + courseNumber, gradeOptions);
-
-      const remove = document.createElement("button");
-      remove.className = "delete-row";
-      remove.type = "button";
-      remove.textContent = "×";
-      remove.title = "Remove course";
-      remove.setAttribute("aria-label", "Remove course " + courseNumber);
-      remove.addEventListener("click", () => {
-        row.remove();
-        renumberCourses();
-        calculateGpa();
-      });
-
-      row.append(label, credits, grade, remove);
-      rowsContainer.appendChild(row);
-      calculateGpa();
-    }
-
-    function renumberCourses() {
-      [...rowsContainer.children].forEach((row, index) => {
-        const number = index + 1;
-        row.querySelector(".course-label").textContent = "Course " + number;
-        row.querySelector(".credits").setAttribute("aria-label", "Credits for course " + number);
-        row.querySelector(".grades").setAttribute("aria-label", "Grade for course " + number);
-        row.querySelector(".delete-row").setAttribute("aria-label", "Remove course " + number);
-      });
-      courseNumber = rowsContainer.children.length;
-    }
-
-    function calculateGpa() {
-      let totalCredits = 0;
-      let totalPoints = 0;
-      let completedCourses = 0;
-
-      [...rowsContainer.children].forEach(row => {
-        const credits = Number(row.querySelector(".credits").value);
-        const grade = row.querySelector(".grades").value;
-        if (!credits || !grade) return;
-
-        const gradePoint = gradeScales[activeUniversity].find(item => item.grade === grade)?.gpa ?? 0;
-        totalCredits += credits;
-        totalPoints += credits * gradePoint;
-        completedCourses += 1;
-      });
-
-      const gpa = totalCredits ? totalPoints / totalCredits : 0;
-      gpaValue.textContent = gpa.toFixed(2);
-      progressRing.style.strokeDasharray = String(circumference);
-      progressRing.style.strokeDashoffset = String(circumference - (gpa / 4) * circumference);
-      totalCreditsLabel.textContent = "Total Credits: " + totalCredits;
-      totalPointsLabel.textContent = "Total Grade Points: " + totalPoints.toFixed(2);
-      resultHint.textContent = completedCourses
-        ? completedCourses + (completedCourses === 1 ? " course included in this calculation." : " courses included in this calculation.")
-        : "Choose credits and grades to calculate your GPA.";
-    }
-
-    function populateGradeTable(university) {
-      const tbody = document.querySelector("#grade-scale-table tbody");
-      tbody.replaceChildren();
-
-      gradeScales[university].forEach(item => {
-        const row = document.createElement("tr");
-        [item.grade, item.marks, item.gpa.toFixed(2)].forEach(value => {
-          const cell = document.createElement("td");
-          cell.textContent = value;
-          row.appendChild(cell);
-        });
-        tbody.appendChild(row);
-      });
-    }
-
-    function selectUniversity(university) {
-      if (university === activeUniversity) return;
-      activeUniversity = university;
-
-      document.querySelectorAll(".nav-item").forEach(button => {
-        const active = button.dataset.uni === university;
-        button.classList.toggle("active", active);
-        button.setAttribute("aria-pressed", String(active));
-      });
-
-      const asset = universityAssets[university];
-      document.getElementById("university-logo").src = asset.logo;
-      document.getElementById("university-logo").alt = asset.name + " logo";
-      document.querySelector(".info").style.backgroundImage =
-        "linear-gradient(rgba(0, 47, 122, .87), rgba(0, 47, 122, .87)), url('" + asset.background + "')";
-
-      populateGradeTable(university);
-      rowsContainer.replaceChildren();
-      courseNumber = 0;
-      addCourse();
-    }
-
-    document.querySelectorAll(".nav-item").forEach(button => {
-      button.addEventListener("click", () => selectUniversity(button.dataset.uni));
-    });
-
-    document.getElementById("add-course").addEventListener("click", addCourse);
-
-    populateGradeTable(activeUniversity);
-    addCourse();
-    progressRing.style.strokeDasharray = String(circumference);
-  </script>
 </body>
+
 </html>
